@@ -1,0 +1,32 @@
+{
+  "name": "pagerenderapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "graphql-codegen --config codegen.yml",
+    "compile": "npm run generate && tsc",
+    "start": "npm run compile && node --experimental-specifier-resolution=node ./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@apollo/server": "^4.9.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "graphql": "^16.7.1",
+    "graphql-scalars": "^1.22.2",
+    "http": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-resolvers": "^4.0.1",
+    "@types/cors": "^2.8.13",
+    "@types/node": "^20.4.9",
+    "typescript": "^5.1.6"
+  }
+}

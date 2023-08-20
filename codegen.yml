@@ -1,0 +1,13 @@
+schema: "./schema.graphql"
+generates:
+  ./src/__generated__/resolvers-types.ts:
+    plugins:
+    - "typescript"
+    - "typescript-resolvers"
+    config:
+      useIndexSignature: true
+      contextType: "../utils/setup#Context"
+      scalars:
+        Date: string
+        URL: string
+        UUID: string

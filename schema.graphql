@@ -1,0 +1,236 @@
+
+"""
+Represents a date value in ISO 8601 format.
+"""
+scalar Date
+
+
+"""
+Represents a URL string.
+"""
+scalar URL
+
+"""
+Represents a universally unique identifier (UUID).
+"""
+scalar UUID
+
+enum PageTypeEnum {
+    """
+    Represents a PDF document.
+    """
+    PDF
+    """
+    Represents a JPEG image.
+    """
+    JPEG
+    """
+    Represents a PNG image.
+    """
+    PNG
+    """
+    Represents a WEBP image.
+    """
+    WEBP
+}
+
+type Page {
+    """
+    The unique identifier for the page.
+    """
+    id: UUID!
+    """
+    The type of the page (e.g., PDF, JPEG, etc.).
+    """
+    type: PageTypeEnum!
+    """
+    The date on which page was created
+    """
+    date: Date!
+    """
+    The URL of the website.
+    """
+    site: URL!
+    """
+    The URL of the page's file.
+    """
+    file: URL!
+}
+
+type PageEdge {
+    """
+    The actual page data.
+    """
+    node: Page!
+    """
+    A cursor for pagination purposes.
+    """
+    cursor: UUID!
+}
+
+type Pages {
+    """
+    A list of page edges.
+    """
+    edges: [PageEdge!]!
+    """
+    Information about pagination.
+    """
+    pageInfo: PageInfo!
+}
+
+type PageInfo {
+    """
+    Indicates if there are more pages after the current set.
+    """
+    hasNextPage: Boolean!
+    """
+    Indicates if there are more pages before the current set.
+    """
+    hasPreviousPage: Boolean!
+    """
+    The cursor marking the start of the current set.
+    """
+    startCursor: UUID!
+    """
+    The cursor marking the end of the current set.
+    """
+    endCursor: UUID!
+}
+
+input PageTypeEnumFilter {
+    """
+    Filters for pages with the specified type.
+    """
+    eq: PageTypeEnum
+    """
+    Filters for pages not of the specified type.
+    """
+    ne: PageTypeEnum
+    """
+    Filters for pages with types in the specified list.
+    """
+    in: [PageTypeEnum!]
+    """
+    Filters for pages not in the specified list of types.
+    """
+    nin: [PageTypeEnum!]
+}
+
+input DateFilter {
+    """
+    Filters for dates greater than the specified value.
+    """
+    gt: Date
+    """
+    Filters for dates less than the specified value.
+    """
+    lt: Date
+    """
+    Filters for dates greater than or equal to the specified value.
+    """
+    gte: Date
+    """
+    Filters for dates less than or equal to the specified value.
+    """
+    lte: Date
+}
+
+input PageFilterInput {
+    """
+    Filters for pages based on their types.
+    """
+    type: PageTypeEnumFilter
+    """
+    Filters for pages based on date ranges.
+    """
+    date: DateFilter
+}
+
+type Query {
+    """
+    Retrieves a list of pages.
+    """  
+    pages(
+        """
+        Retrieves the first N pages.
+        """
+        first: Int,
+        """
+        Retrieves the last N pages.
+        """
+        last: Int,
+        """
+        Retrieves pages before the specified cursor.
+        """
+        before: UUID,
+        """
+        Retrieves pages after the specified cursor.
+        """
+        after: UUID,
+        """
+        Applies filters to page retrieval.
+        """
+        filter: PageFilterInput
+    ): [Pages!]
+    """
+    Retrieves a specific page by its ID.
+    """  
+    page(id: UUID!): Page!
+}
+
+input PageInput {
+    """
+    The type of the page.
+    """
+    type: PageTypeEnum!
+    """
+    The URL of the website for the new page.
+    """
+    site: URL!
+}
+
+enum ResultStatusEnum {
+    """
+    The operation was successful.
+    """
+    SUCCESS
+    """
+    The operation encountered an error.
+    """
+    ERROR
+}
+
+type Result {
+    """
+    The ID of the affected object.
+    """
+    affectedId: UUID!,
+    """
+    The status of the operation.
+    """
+    status: ResultStatusEnum!,
+    """
+    Error message, if applicable.
+    """
+    error: String,
+    """
+    The associated page in the result.
+    """
+    page: Page!
+}
+
+type Mutation {
+    """
+    Creates a new page.
+    """
+    createPage(input: PageInput!): Result!
+    """
+    Updates a page.
+    """
+    updatePage(id: UUID!, input: PageInput!): Result!
+    """
+    Deletes a page.
+    """
+    deletePage(id: UUID!): Result!
+}
