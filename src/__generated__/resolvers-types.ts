@@ -5,31 +5,33 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
   /** Represents a date value in ISO 8601 format. */
-  Date: string;
+  Date: { input: string; output: string; }
   /** Represents a URL string. */
-  URL: string;
+  URL: { input: string; output: string; }
   /** Represents a universally unique identifier (UUID). */
-  UUID: string;
+  UUID: { input: string; output: string; }
 };
 
 export type DateFilter = {
   /** Filters for dates greater than the specified value. */
-  gt?: InputMaybe<Scalars['Date']>;
+  gt?: InputMaybe<Scalars['Date']['input']>;
   /** Filters for dates greater than or equal to the specified value. */
-  gte?: InputMaybe<Scalars['Date']>;
+  gte?: InputMaybe<Scalars['Date']['input']>;
   /** Filters for dates less than the specified value. */
-  lt?: InputMaybe<Scalars['Date']>;
+  lt?: InputMaybe<Scalars['Date']['input']>;
   /** Filters for dates less than or equal to the specified value. */
-  lte?: InputMaybe<Scalars['Date']>;
+  lte?: InputMaybe<Scalars['Date']['input']>;
 };
 
 export type Mutation = {
@@ -49,25 +51,25 @@ export type MutationCreatePageArgs = {
 
 
 export type MutationDeletePageArgs = {
-  id: Scalars['UUID'];
+  id: Scalars['UUID']['input'];
 };
 
 
 export type MutationUpdatePageArgs = {
-  id: Scalars['UUID'];
+  id: Scalars['UUID']['input'];
   input: PageInput;
 };
 
 export type Page = {
   __typename?: 'Page';
   /** The date on which page was created */
-  date: Scalars['Date'];
+  date: Scalars['Date']['output'];
   /** The URL of the page's file. */
-  file: Scalars['URL'];
+  file: Scalars['URL']['output'];
   /** The unique identifier for the page. */
-  id: Scalars['UUID'];
+  id: Scalars['UUID']['output'];
   /** The URL of the website. */
-  site: Scalars['URL'];
+  site: Scalars['URL']['output'];
   /** The type of the page (e.g., PDF, JPEG, etc.). */
   type: PageTypeEnum;
 };
@@ -75,7 +77,7 @@ export type Page = {
 export type PageEdge = {
   __typename?: 'PageEdge';
   /** A cursor for pagination purposes. */
-  cursor: Scalars['UUID'];
+  cursor: Scalars['UUID']['output'];
   /** The actual page data. */
   node: Page;
 };
@@ -90,20 +92,27 @@ export type PageFilterInput = {
 export type PageInfo = {
   __typename?: 'PageInfo';
   /** The cursor marking the end of the current set. */
-  endCursor: Scalars['UUID'];
+  endCursor: Scalars['UUID']['output'];
   /** Indicates if there are more pages after the current set. */
-  hasNextPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean']['output'];
   /** Indicates if there are more pages before the current set. */
-  hasPreviousPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean']['output'];
   /** The cursor marking the start of the current set. */
-  startCursor: Scalars['UUID'];
+  startCursor: Scalars['UUID']['output'];
 };
 
 export type PageInput = {
   /** The URL of the website for the new page. */
-  site: Scalars['URL'];
+  site: Scalars['URL']['input'];
   /** The type of the page. */
   type: PageTypeEnum;
+};
+
+export type PageSortInput = {
+  /** Specify the field to sort by */
+  field: SortFieldEnum;
+  /** Specify the sorting order */
+  order: SortOrderEnum;
 };
 
 export enum PageTypeEnum {
@@ -146,24 +155,25 @@ export type Query = {
 
 
 export type QueryPageArgs = {
-  id: Scalars['UUID'];
+  id: Scalars['UUID']['input'];
 };
 
 
 export type QueryPagesArgs = {
-  after?: InputMaybe<Scalars['UUID']>;
-  before?: InputMaybe<Scalars['UUID']>;
+  after?: InputMaybe<Scalars['UUID']['input']>;
+  before?: InputMaybe<Scalars['UUID']['input']>;
   filter?: InputMaybe<PageFilterInput>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<PageSortInput>;
 };
 
 export type Result = {
   __typename?: 'Result';
   /** The ID of the affected object. */
-  affectedId: Scalars['UUID'];
+  affectedId: Scalars['UUID']['output'];
   /** Error message, if applicable. */
-  error?: Maybe<Scalars['String']>;
+  error?: Maybe<Scalars['String']['output']>;
   /** The associated page in the result. */
   page: Page;
   /** The status of the operation. */
@@ -175,6 +185,24 @@ export enum ResultStatusEnum {
   Error = 'ERROR',
   /** The operation was successful. */
   Success = 'SUCCESS'
+}
+
+export enum SortFieldEnum {
+  /** Sort by page date */
+  Date = 'DATE',
+  /** Sort by page file */
+  File = 'FILE',
+  /** Sort by page site */
+  Site = 'SITE',
+  /** Sort by page type */
+  Type = 'TYPE'
+}
+
+export enum SortOrderEnum {
+  /** Sort in ascending order */
+  Asc = 'ASC',
+  /** Sort in descending order */
+  Desc = 'DESC'
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -245,48 +273,54 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+
+
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Date: ResolverTypeWrapper<Scalars['Date']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateFilter: DateFilter;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Page: ResolverTypeWrapper<Page>;
   PageEdge: ResolverTypeWrapper<PageEdge>;
   PageFilterInput: PageFilterInput;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   PageInput: PageInput;
+  PageSortInput: PageSortInput;
   PageTypeEnum: PageTypeEnum;
   PageTypeEnumFilter: PageTypeEnumFilter;
   Pages: ResolverTypeWrapper<Pages>;
   Query: ResolverTypeWrapper<{}>;
   Result: ResolverTypeWrapper<Result>;
   ResultStatusEnum: ResultStatusEnum;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  URL: ResolverTypeWrapper<Scalars['URL']>;
-  UUID: ResolverTypeWrapper<Scalars['UUID']>;
+  SortFieldEnum: SortFieldEnum;
+  SortOrderEnum: SortOrderEnum;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  URL: ResolverTypeWrapper<Scalars['URL']['output']>;
+  UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  Boolean: Scalars['Boolean'];
-  Date: Scalars['Date'];
+  Boolean: Scalars['Boolean']['output'];
+  Date: Scalars['Date']['output'];
   DateFilter: DateFilter;
-  Int: Scalars['Int'];
+  Int: Scalars['Int']['output'];
   Mutation: {};
   Page: Page;
   PageEdge: PageEdge;
   PageFilterInput: PageFilterInput;
   PageInfo: PageInfo;
   PageInput: PageInput;
+  PageSortInput: PageSortInput;
   PageTypeEnumFilter: PageTypeEnumFilter;
   Pages: Pages;
   Query: {};
   Result: Result;
-  String: Scalars['String'];
-  URL: Scalars['URL'];
-  UUID: Scalars['UUID'];
+  String: Scalars['String']['output'];
+  URL: Scalars['URL']['output'];
+  UUID: Scalars['UUID']['output'];
 }>;
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {

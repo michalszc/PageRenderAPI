@@ -147,6 +147,47 @@ input PageFilterInput {
     date: DateFilter
 }
 
+enum SortFieldEnum {
+    """
+    Sort by page type
+    """
+    TYPE
+    """
+    Sort by page date
+    """
+    DATE
+    """
+    Sort by page site
+    """
+    SITE
+    """
+    Sort by page file
+    """
+    FILE
+}
+
+enum SortOrderEnum {
+    """
+    Sort in ascending order
+    """
+    ASC
+    """
+    Sort in descending order
+    """
+    DESC
+}
+
+input PageSortInput {
+    """
+    Specify the field to sort by
+    """
+    field: SortFieldEnum!
+    """
+    Specify the sorting order
+    """
+    order: SortOrderEnum!
+}
+
 type Query {
     """
     Retrieves a list of pages.
@@ -172,6 +213,10 @@ type Query {
         Applies filters to page retrieval.
         """
         filter: PageFilterInput
+        """
+        Specifies the sorting order for the retrieved pages.
+        """
+        sort: PageSortInput
     ): [Pages!]
     """
     Retrieves a specific page by its ID.
