@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm run compile",
     "generate": "graphql-codegen --config codegen.yml",
     "compile": "npm run generate && tsc",
-    "start": "npm run compile && node --experimental-specifier-resolution=node ./dist/index.js"
+    "start": "npm run compile && node --experimental-specifier-resolution=node ./dist/index.js",
+    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon --experimental-specifier-resolution=node ./dist/index.js \""
   },
   "keywords": [],
   "author": "",
@@ -16,10 +18,12 @@
     "@apollo/server": "^4.9.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
-    "http": "^0.0.1-security"
+    "http": "^0.0.1-security",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",
@@ -27,6 +31,9 @@
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@types/cors": "^2.8.13",
     "@types/node": "^20.4.9",
+    "@types/pg": "^8.10.2",
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1",
     "typescript": "^5.1.6"
   }
 }
