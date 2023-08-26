@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "postinstall": "npm run compile",
     "generate": "graphql-codegen --config codegen.yml",
     "compile": "npm run generate && tsc",
@@ -32,7 +34,11 @@
     "@types/cors": "^2.8.13",
     "@types/node": "^20.4.9",
     "@types/pg": "^8.10.2",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
     "concurrently": "^8.2.1",
+    "eslint": "^8.48.0",
+    "eslint-config-standard": "^17.1.0",
     "nodemon": "^3.0.1",
     "typescript": "^5.1.6"
   }

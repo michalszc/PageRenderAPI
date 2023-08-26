@@ -1,6 +1,6 @@
 import { Page, Pages } from './../__generated__/resolvers-types';
 import { Context } from './../utils/setup';
-import { QueryPageArgs, QueryPagesArgs, QueryResolvers, RequireFields } from "../__generated__/resolvers-types";
+import { QueryPageArgs, QueryPagesArgs, QueryResolvers, RequireFields } from '../__generated__/resolvers-types';
 
 const queries: QueryResolvers = {
     page: async (
@@ -28,7 +28,7 @@ const queries: QueryResolvers = {
         };
 
         return pages;
-    },
+    }
 };
 
 export default queries;

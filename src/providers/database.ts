@@ -1,5 +1,8 @@
 import pg from 'pg';
-import { Maybe, Page, PageFilterInput, PageInfo, PageSortInput, QueryPagesArgs } from '../__generated__/resolvers-types';
+import {
+    Maybe, Page, PageFilterInput,
+    PageInfo, PageSortInput, QueryPagesArgs
+} from '../__generated__/resolvers-types';
 import { DateFilter, TypeEnumFilter } from '../utils';
 
 export type AtLeastOne<T, U = {[K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U];
@@ -7,7 +10,7 @@ export type AtLeastOne<T, U = {[K in keyof T]: Pick<T, K> }> = Partial<T> & U[ke
 export type IQueryOptions = Maybe<AtLeastOne<{
     filters: Array<string>,
     sort: string
-}>>; 
+}>>;
 
 export interface IDatabase {
     getPage: (id: string) => Promise<Page>;
@@ -39,6 +42,7 @@ export class Database implements IDatabase {
 
     private async connect(): Promise<void> {
         this.client = new pg.Client();
+
         return this.client.connect();
     }
 
@@ -46,12 +50,13 @@ export class Database implements IDatabase {
         return this.client.end();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private async query(queryText: string, values: Array<any> = []): Promise<pg.QueryResult<any>> {
-        let result: pg.QueryResult<any>;
+        let result: pg.QueryResult<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
         try {
             await this.connect();
             result = await this.client.query(queryText, values);
-        } catch (err) {
+        } catch (err) { // eslint-disable-next-line no-console
             console.error(err);
         } finally {
             await this.end();
@@ -96,7 +101,7 @@ export class Database implements IDatabase {
     }): IQueryOptions {
         const sort_ = sort !== null ? this.buildSort(sort) : null;
         const filters = filter !== null ? this.buildFilters(filter) : null;
-        
+
         if (filters === null && sort_ === null) {
             return null;
         } else if (filters === null) {
@@ -123,7 +128,7 @@ export class Database implements IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs): Promise<Array<Page>> {
-        const options: IQueryOptions  = this.buildQueryOptions({sort, filter});
+        const options: IQueryOptions = this.buildQueryOptions({ sort, filter });
         const result = await this.query('SELECT * FROM paginationSelect($1, $2, $3, $4, $5)', [
             first, last, before, after, options
         ]);
@@ -140,13 +145,12 @@ export class Database implements IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs): Promise<PageInfo> {
-        const options: IQueryOptions  = this.buildQueryOptions({sort, filter});
+        const options: IQueryOptions = this.buildQueryOptions({ sort, filter });
         const result = await this.query('SELECT * FROM paginationInfo($1, $2, $3, $4, $5)', [
             first, last, before, after, options
         ]);
         const paginationinfo: PageInfo = result.rows.at(0)?.paginationinfo ?? null;
-        
+
         return paginationinfo;
     }
-
 }

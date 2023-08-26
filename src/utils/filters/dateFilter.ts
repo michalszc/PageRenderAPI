@@ -1,8 +1,9 @@
 import { DateFilter as DateFilterType } from './../../__generated__/resolvers-types';
 
 export class DateFilter {
+    // eslint-disable-next-line no-useless-constructor
     constructor(readonly dateFilter: DateFilterType) {}
-    
+
     public exec(): string {
         if (this.dateFilter === undefined) {
             return null;
