@@ -1,7 +1,8 @@
 import pg from 'pg';
 import {
+    CreatePageInput, UpdatePageInput,
     Maybe, Page, PageFilterInput,
-    PageInfo, PageInput, PageSortInput, QueryPagesArgs
+    PageInfo, PageSortInput, QueryPagesArgs
 } from '../__generated__/resolvers-types';
 import { DateFilter, TypeEnumFilter } from '../utils';
 
@@ -11,6 +12,10 @@ export type IQueryOptions = Maybe<AtLeastOne<{
     filters: Array<string>,
     sort: string
 }>>;
+
+export interface IUpdateFields extends UpdatePageInput {
+    file?: Maybe<string>;
+}
 
 export interface IDatabase {
     getPage: (id: string) => Promise<Page>;
@@ -30,7 +35,9 @@ export interface IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs) => Promise<PageInfo>;
-    createPage: ({ site, type }: PageInput) => Promise<Page>;
+    createPage: ({ site, type }: CreatePageInput) => Promise<Page>;
+    updatePage: (id: string, updateFields: IUpdateFields) => Promise<Page>;
+    deletePage: (id: string) => Promise<Page>;
 }
 
 export class Database implements IDatabase {
@@ -154,9 +161,46 @@ export class Database implements IDatabase {
         return paginationinfo;
     }
 
-    public async createPage({ site, type }: PageInput): Promise<Page> {
+    public async createPage({ site, type }: CreatePageInput): Promise<Page> {
         const result = await this.query('INSERT INTO pages (type, site, file) VALUES ($1, $2, $3) RETURNING *', [
             type, site, 'file'
+        ]);
+        const page: Page = result.rows[0];
+
+        return page;
+    }
+
+    private buildUpdateFields({ site = null, type = null, file = null }: IUpdateFields): string {
+        const fields: Array<string> = [];
+
+        if (site !== null) {
+            fields.push(`site = '${site}'`);
+        }
+
+        if (type !== null) {
+            fields.push(`type = '${type}'`);
+        }
+
+        if (file !== null) {
+            fields.push(`file = '${file}'`);
+        }
+
+        return fields.join(',');
+    }
+
+    public async updatePage(id: string, updateFields: IUpdateFields): Promise<Page> {
+        const update = this.buildUpdateFields(updateFields);
+        const result = await this.query(`UPDATE pages SET date = CURRENT_DATE, ${update} WHERE id = $1 RETURNING *`, [
+            id
+        ]);
+        const page: Page = result.rows[0];
+
+        return page;
+    }
+
+    public async deletePage(id: string): Promise<Page> {
+        const result = await this.query('DELETE FROM pages WHERE id = $1 RETURNING *', [
+            id
         ]);
         const page: Page = result.rows[0];
 

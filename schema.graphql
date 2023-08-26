@@ -224,7 +224,7 @@ type Query {
     page(id: UUID!): Page!
 }
 
-input PageInput {
+input CreatePageInput {
     """
     The type of the page.
     """
@@ -233,6 +233,17 @@ input PageInput {
     The URL of the website for the new page.
     """
     site: URL!
+}
+
+input UpdatePageInput {
+    """
+    The type of the page.
+    """
+    type: PageTypeEnum
+    """
+    The URL of the website for the new page.
+    """
+    site: URL
 }
 
 enum ResultStatusEnum {
@@ -269,11 +280,11 @@ type Mutation {
     """
     Creates a new page.
     """
-    createPage(input: PageInput!): Result!
+    createPage(input: CreatePageInput!): Result!
     """
     Updates a page.
     """
-    updatePage(id: UUID!, input: PageInput!): Result!
+    updatePage(id: UUID!, input: UpdatePageInput!): Result!
     """
     Deletes a page.
     """

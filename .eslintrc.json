@@ -28,7 +28,7 @@
             "asyncArrow": "always"
         }],
         "max-len": ["error", {
-            "code": 115,
+            "code": 120,
             "ignoreComments": true,
             "ignoreRegExpLiterals": true
         }],

@@ -23,6 +23,13 @@ export type Scalars = {
   UUID: { input: string; output: string; }
 };
 
+export type CreatePageInput = {
+  /** The URL of the website for the new page. */
+  site: Scalars['URL']['input'];
+  /** The type of the page. */
+  type: PageTypeEnum;
+};
+
 export type DateFilter = {
   /** Filters for dates greater than the specified value. */
   gt?: InputMaybe<Scalars['Date']['input']>;
@@ -46,7 +53,7 @@ export type Mutation = {
 
 
 export type MutationCreatePageArgs = {
-  input: PageInput;
+  input: CreatePageInput;
 };
 
 
@@ -57,7 +64,7 @@ export type MutationDeletePageArgs = {
 
 export type MutationUpdatePageArgs = {
   id: Scalars['UUID']['input'];
-  input: PageInput;
+  input: UpdatePageInput;
 };
 
 export type Page = {
@@ -99,13 +106,6 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** The cursor marking the start of the current set. */
   startCursor?: Maybe<Scalars['UUID']['output']>;
-};
-
-export type PageInput = {
-  /** The URL of the website for the new page. */
-  site: Scalars['URL']['input'];
-  /** The type of the page. */
-  type: PageTypeEnum;
 };
 
 export type PageSortInput = {
@@ -205,6 +205,13 @@ export enum SortOrderEnum {
   Desc = 'DESC'
 }
 
+export type UpdatePageInput = {
+  /** The URL of the website for the new page. */
+  site?: InputMaybe<Scalars['URL']['input']>;
+  /** The type of the page. */
+  type?: InputMaybe<PageTypeEnum>;
+};
+
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -278,6 +285,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreatePageInput: CreatePageInput;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateFilter: DateFilter;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -286,7 +294,6 @@ export type ResolversTypes = ResolversObject<{
   PageEdge: ResolverTypeWrapper<PageEdge>;
   PageFilterInput: PageFilterInput;
   PageInfo: ResolverTypeWrapper<PageInfo>;
-  PageInput: PageInput;
   PageSortInput: PageSortInput;
   PageTypeEnum: PageTypeEnum;
   PageTypeEnumFilter: PageTypeEnumFilter;
@@ -299,11 +306,13 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   URL: ResolverTypeWrapper<Scalars['URL']['output']>;
   UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
+  UpdatePageInput: UpdatePageInput;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  CreatePageInput: CreatePageInput;
   Date: Scalars['Date']['output'];
   DateFilter: DateFilter;
   Int: Scalars['Int']['output'];
@@ -312,7 +321,6 @@ export type ResolversParentTypes = ResolversObject<{
   PageEdge: PageEdge;
   PageFilterInput: PageFilterInput;
   PageInfo: PageInfo;
-  PageInput: PageInput;
   PageSortInput: PageSortInput;
   PageTypeEnumFilter: PageTypeEnumFilter;
   Pages: Pages;
@@ -321,6 +329,7 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String']['output'];
   URL: Scalars['URL']['output'];
   UUID: Scalars['UUID']['output'];
+  UpdatePageInput: UpdatePageInput;
 }>;
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
