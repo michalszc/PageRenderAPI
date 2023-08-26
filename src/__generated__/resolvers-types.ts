@@ -171,11 +171,11 @@ export type QueryPagesArgs = {
 export type Result = {
   __typename?: 'Result';
   /** The ID of the affected object. */
-  affectedId: Scalars['UUID']['output'];
+  affectedId?: Maybe<Scalars['UUID']['output']>;
   /** Error message, if applicable. */
   error?: Maybe<Scalars['String']['output']>;
   /** The associated page in the result. */
-  page: Page;
+  page?: Maybe<Page>;
   /** The status of the operation. */
   status: ResultStatusEnum;
 };
@@ -368,9 +368,9 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 }>;
 
 export type ResultResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = ResolversObject<{
-  affectedId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  affectedId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  page?: Resolver<ResolversTypes['Page'], ParentType, ContextType>;
+  page?: Resolver<Maybe<ResolversTypes['Page']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['ResultStatusEnum'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

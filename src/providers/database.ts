@@ -1,7 +1,7 @@
 import pg from 'pg';
 import {
     Maybe, Page, PageFilterInput,
-    PageInfo, PageSortInput, QueryPagesArgs
+    PageInfo, PageInput, PageSortInput, QueryPagesArgs
 } from '../__generated__/resolvers-types';
 import { DateFilter, TypeEnumFilter } from '../utils';
 
@@ -30,7 +30,7 @@ export interface IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs) => Promise<PageInfo>;
-
+    createPage: ({ site, type }: PageInput) => Promise<Page>;
 }
 
 export class Database implements IDatabase {
@@ -152,5 +152,14 @@ export class Database implements IDatabase {
         const paginationinfo: PageInfo = result.rows.at(0)?.paginationinfo ?? null;
 
         return paginationinfo;
+    }
+
+    public async createPage({ site, type }: PageInput): Promise<Page> {
+        const result = await this.query('INSERT INTO pages (type, site, file) VALUES ($1, $2, $3) RETURNING *', [
+            type, site, 'file'
+        ]);
+        const page: Page = result.rows[0];
+
+        return page;
     }
 }

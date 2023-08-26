@@ -250,7 +250,7 @@ type Result {
     """
     The ID of the affected object.
     """
-    affectedId: UUID!,
+    affectedId: UUID,
     """
     The status of the operation.
     """
@@ -262,7 +262,7 @@ type Result {
     """
     The associated page in the result.
     """
-    page: Page!
+    page: Page
 }
 
 type Mutation {
