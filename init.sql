@@ -130,14 +130,14 @@ BEGIN
         cursor := after;
     END IF;
 
-    SELECT r_id
+    SELECT id
     INTO start_cursor
     FROM paginationSelect(
         first, last, before, after, options
     ) LIMIT 1;
 
 
-    SELECT r_id
+    SELECT id
     INTO end_cursor
     FROM (
         SELECT *, ROW_NUMBER() OVER () AS row_num
@@ -152,14 +152,14 @@ BEGIN
     INTO has_previous_page
     FROM paginationSelect(
         first, last, start_cursor, NULL, options
-    ) WHERE r_id <> cursor
+    ) WHERE id <> cursor
     LIMIT 1;
 
     SELECT COUNT(*) > 0
     INTO has_next_page
     FROM paginationSelect(
         first, last, NULL, end_cursor, options
-    ) WHERE r_id <> cursor
+    ) WHERE id <> cursor
     LIMIT 1;
 
     RETURN json_build_object(

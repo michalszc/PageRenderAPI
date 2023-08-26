@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { Maybe, Page, PageFilterInput, PageSortInput, QueryPagesArgs } from '../__generated__/resolvers-types';
+import { Maybe, Page, PageFilterInput, PageInfo, PageSortInput, QueryPagesArgs } from '../__generated__/resolvers-types';
 import { DateFilter, TypeEnumFilter } from '../utils';
 
 export type AtLeastOne<T, U = {[K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U];
@@ -19,6 +19,15 @@ export interface IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs) => Promise<Array<Page>>;
+    getPageInfo: ({
+        after = null,
+        before = null,
+        first = null,
+        last = null,
+        filter = null,
+        sort = null
+    }: QueryPagesArgs) => Promise<PageInfo>;
+
 }
 
 export class Database implements IDatabase {
@@ -78,6 +87,34 @@ export class Database implements IDatabase {
         return filters;
     }
 
+    private buildQueryOptions({
+        filter = null,
+        sort = null
+    }: {
+        filter: PageFilterInput,
+        sort: PageSortInput
+    }): IQueryOptions {
+        const sort_ = sort !== null ? this.buildSort(sort) : null;
+        const filters = filter !== null ? this.buildFilters(filter) : null;
+        
+        if (filters === null && sort_ === null) {
+            return null;
+        } else if (filters === null) {
+            return {
+                sort: sort_
+            };
+        } else if (sort_ === null) {
+            return {
+                filters
+            };
+        } else {
+            return {
+                sort: sort_,
+                filters
+            };
+        }
+    }
+
     public async getPages({
         after = null,
         before = null,
@@ -86,34 +123,30 @@ export class Database implements IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs): Promise<Array<Page>> {
-        const options: IQueryOptions  = (() => {
-            const sort_ = sort !== null ? this.buildSort(sort) : null;
-            const filters = filter !== null ? this.buildFilters(filter) : null;
-            
-            if (filters === null && sort_ === null) {
-                return null;
-            } else if (filters === null) {
-                return {
-                    sort: sort_
-                };
-            } else if (sort_ === null) {
-                return {
-                    filters
-                };
-            } else {
-                return {
-                    sort: sort_,
-                    filters
-                };
-            }
-        })();
-
+        const options: IQueryOptions  = this.buildQueryOptions({sort, filter});
         const result = await this.query('SELECT * FROM paginationSelect($1, $2, $3, $4, $5)', [
             first, last, before, after, options
         ]);
         const pages: Array<Page> = result.rows;
 
         return pages;
+    }
+
+    public async getPageInfo({
+        after = null,
+        before = null,
+        first = null,
+        last = null,
+        filter = null,
+        sort = null
+    }: QueryPagesArgs): Promise<PageInfo> {
+        const options: IQueryOptions  = this.buildQueryOptions({sort, filter});
+        const result = await this.query('SELECT * FROM paginationInfo($1, $2, $3, $4, $5)', [
+            first, last, before, after, options
+        ]);
+        const paginationinfo: PageInfo = result.rows.at(0)?.paginationinfo ?? null;
+        
+        return paginationinfo;
     }
 
 }

@@ -92,13 +92,13 @@ export type PageFilterInput = {
 export type PageInfo = {
   __typename?: 'PageInfo';
   /** The cursor marking the end of the current set. */
-  endCursor: Scalars['UUID']['output'];
+  endCursor?: Maybe<Scalars['UUID']['output']>;
   /** Indicates if there are more pages after the current set. */
   hasNextPage: Scalars['Boolean']['output'];
   /** Indicates if there are more pages before the current set. */
   hasPreviousPage: Scalars['Boolean']['output'];
   /** The cursor marking the start of the current set. */
-  startCursor: Scalars['UUID']['output'];
+  startCursor?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type PageInput = {
@@ -150,7 +150,7 @@ export type Query = {
   /** Retrieves a specific page by its ID. */
   page: Page;
   /** Retrieves a list of pages. */
-  pages?: Maybe<Array<Pages>>;
+  pages: Pages;
 };
 
 
@@ -349,10 +349,10 @@ export type PageEdgeResolvers<ContextType = Context, ParentType extends Resolver
 }>;
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
-  endCursor?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  endCursor?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  startCursor?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  startCursor?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -364,7 +364,7 @@ export type PagesResolvers<ContextType = Context, ParentType extends ResolversPa
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   page?: Resolver<ResolversTypes['Page'], ParentType, ContextType, RequireFields<QueryPageArgs, 'id'>>;
-  pages?: Resolver<Maybe<Array<ResolversTypes['Pages']>>, ParentType, ContextType, Partial<QueryPagesArgs>>;
+  pages?: Resolver<ResolversTypes['Pages'], ParentType, ContextType, Partial<QueryPagesArgs>>;
 }>;
 
 export type ResultResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = ResolversObject<{

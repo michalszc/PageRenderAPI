@@ -91,11 +91,11 @@ type PageInfo {
     """
     The cursor marking the start of the current set.
     """
-    startCursor: UUID!
+    startCursor: UUID
     """
     The cursor marking the end of the current set.
     """
-    endCursor: UUID!
+    endCursor: UUID
 }
 
 input PageTypeEnumFilter {
@@ -217,7 +217,7 @@ type Query {
         Specifies the sorting order for the retrieved pages.
         """
         sort: PageSortInput
-    ): [Pages!]
+    ): Pages!
     """
     Retrieves a specific page by its ID.
     """  
