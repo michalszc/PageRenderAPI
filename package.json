@@ -6,6 +6,8 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
+    "validate": "npm run lint",
+    "prepare": "husky install",
     "postinstall": "npm run compile",
     "generate": "graphql-codegen --config codegen.yml",
     "compile": "npm run generate && tsc",
@@ -39,6 +41,7 @@
     "concurrently": "^8.2.1",
     "eslint": "^8.48.0",
     "eslint-config-standard": "^17.1.0",
+    "husky": "^8.0.3",
     "nodemon": "^3.0.1",
     "typescript": "^5.1.6"
   }
