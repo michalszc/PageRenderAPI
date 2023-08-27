@@ -27,9 +27,11 @@
     "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
     "http": "^0.0.1-security",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "pony-cause": "^2.1.10"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^5.0.0",
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
