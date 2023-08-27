@@ -1,17 +1,20 @@
 
 """
-Represents a date value in ISO 8601 format.
+A date string, such as 2007-12-03, compliant with the `full-date`
+format outlined in section 5.6 of the RFC 3339 profile of the
+ISO 8601 standard for representation of dates and times using
+the Gregorian calendar.
 """
 scalar Date
 
 
 """
-Represents a URL string.
+A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt.
 """
 scalar URL
 
 """
-Represents a universally unique identifier (UUID).
+A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier.
 """
 scalar UUID
 
@@ -188,6 +191,31 @@ input PageSortInput {
     order: SortOrderEnum!
 }
 
+interface BaseError {
+  message: String!
+}
+
+type InputFieldValidation {
+  field: String!
+  message: String!
+}
+
+type InvalidInputError implements BaseError {
+  message: String!
+  inputs: [InputFieldValidation!]!
+}
+
+type NotFoundError implements BaseError {
+  message: String!
+}
+
+type UnknownError implements BaseError {
+  message: String!
+}
+
+union PageResult = Page | InvalidInputError | NotFoundError | UnknownError
+union PagesResult = Pages | InvalidInputError | NotFoundError | UnknownError
+
 type Query {
     """
     Retrieves a list of pages.
@@ -217,11 +245,11 @@ type Query {
         Specifies the sorting order for the retrieved pages.
         """
         sort: PageSortInput
-    ): Pages!
+    ): PagesResult!
     """
     Retrieves a specific page by its ID.
     """  
-    page(id: UUID!): Page!
+    page(id: UUID!): PageResult!
 }
 
 input CreatePageInput {
