@@ -9,8 +9,6 @@ import { Database } from './providers';
 const app = express();
 const httpServer = http.createServer(app);
 
-const database = new Database();
-
 const server = createApolloServer(httpServer);
 await server.start();
 
@@ -19,7 +17,9 @@ app.use(
     cors<cors.CorsRequest>(),
     bodyParser.json(),
     expressMiddleware(server, {
-        context: async () => ({ database })
+        context: async () => ({
+            database: new Database()
+        })
     })
 );
 

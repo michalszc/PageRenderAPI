@@ -5,6 +5,7 @@ import {
     PageInfo, PageSortInput, QueryPagesArgs
 } from '../__generated__/resolvers-types';
 import { DateFilter, TypeEnumFilter } from '../utils';
+import { NotFoundError, UnknownError } from '../utils/errors';
 
 export type AtLeastOne<T, U = {[K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U];
 
@@ -65,6 +66,7 @@ export class Database implements IDatabase {
             result = await this.client.query(queryText, values);
         } catch (err) { // eslint-disable-next-line no-console
             console.error(err);
+            throw new UnknownError('Unknown error occurred');
         } finally {
             await this.end();
         }
@@ -74,7 +76,11 @@ export class Database implements IDatabase {
 
     public async getPage(id: string): Promise<Page> {
         const result = await this.query('SELECT * FROM pages WHERE id = $1', [id]);
-        const page: Page = result.rows[0];
+        const page: Page = result.rows.at(0) ?? null;
+
+        if (page === null) {
+            throw new NotFoundError(`Page with ${id} not found`);
+        }
 
         return page;
     }
@@ -157,6 +163,10 @@ export class Database implements IDatabase {
             first, last, before, after, options
         ]);
         const paginationinfo: PageInfo = result.rows.at(0)?.paginationinfo ?? null;
+
+        if (paginationinfo === null) {
+            throw new Error('Could not get page info');
+        }
 
         return paginationinfo;
     }
