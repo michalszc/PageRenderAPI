@@ -1,5 +1,41 @@
 
 """
+A directive that specifies that a field cannot have a null value.
+"""
+directive @notNull on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+"""
+A directive that specifies a numeric range for a field's value.
+The field's value must be within the specified minimum and maximum (inclusive) bounds.
+"""
+directive @range(
+    """
+    The minimum value allowed for the field. Defaults to 0 if not provided.
+    """
+    min: Int = 0,
+
+    """
+    The maximum value allowed for the field. Defaults to positive infinity if not provided.
+    """
+    max: Int = Infinity
+) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+"""
+A directive that specifies a length range for an input field or argument value.
+The value's length must be within the specified minimum and maximum (inclusive) bounds.
+"""
+directive @length(
+    """
+    The minimum length allowed for the value. Defaults to 0 if not provided.
+    """
+    min: Int = 0,
+    """
+    The maximum length allowed for the value. Defaults to positive infinity if not provided.
+    """
+    max: Int = Infinity
+) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+"""
 A date string, such as 2007-12-03, compliant with the `full-date`
 format outlined in section 5.6 of the RFC 3339 profile of the
 ISO 8601 standard for representation of dates and times using
@@ -105,49 +141,49 @@ input PageTypeEnumFilter {
     """
     Filters for pages with the specified type.
     """
-    eq: PageTypeEnum
+    eq: PageTypeEnum @notNull
     """
     Filters for pages not of the specified type.
     """
-    ne: PageTypeEnum
+    ne: PageTypeEnum @notNull
     """
     Filters for pages with types in the specified list.
     """
-    in: [PageTypeEnum!]
+    in: [PageTypeEnum!] @notNull @length(min: 1)
     """
     Filters for pages not in the specified list of types.
     """
-    nin: [PageTypeEnum!]
+    nin: [PageTypeEnum!] @notNull @length(min: 1)
 }
 
 input DateFilter {
     """
     Filters for dates greater than the specified value.
     """
-    gt: Date
+    gt: Date @notNull
     """
     Filters for dates less than the specified value.
     """
-    lt: Date
+    lt: Date @notNull
     """
     Filters for dates greater than or equal to the specified value.
     """
-    gte: Date
+    gte: Date @notNull
     """
     Filters for dates less than or equal to the specified value.
     """
-    lte: Date
+    lte: Date @notNull
 }
 
 input PageFilterInput {
     """
     Filters for pages based on their types.
     """
-    type: PageTypeEnumFilter
+    type: PageTypeEnumFilter @notNull
     """
     Filters for pages based on date ranges.
     """
-    date: DateFilter
+    date: DateFilter @notNull
 }
 
 enum SortFieldEnum {
@@ -224,27 +260,27 @@ type Query {
         """
         Retrieves the first N pages.
         """
-        first: Int,
+        first: Int @notNull @range(min: 0),
         """
         Retrieves the last N pages.
         """
-        last: Int,
+        last: Int @notNull @range(min: 0),
         """
         Retrieves pages before the specified cursor.
         """
-        before: UUID,
+        before: UUID @notNull,
         """
         Retrieves pages after the specified cursor.
         """
-        after: UUID,
+        after: UUID @notNull,
         """
         Applies filters to page retrieval.
         """
-        filter: PageFilterInput
+        filter: PageFilterInput @notNull
         """
         Specifies the sorting order for the retrieved pages.
         """
-        sort: PageSortInput
+        sort: PageSortInput @notNull
     ): PagesResult!
     """
     Retrieves a specific page by its ID.

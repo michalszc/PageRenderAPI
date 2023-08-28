@@ -76,8 +76,41 @@ export const validateDate = validateInput(isDate, 'is not a valid Date');
 export const isNumber = (v: unknown): boolean => Number.isInteger(Number(v));
 export const validateNumber = validateInput(isNumber, 'is not a Number');
 
-export const isGreaterOrEqualThan0 = (v: unknown): boolean => Number(v) >= 0;
-export const validateGreaterOrEqualThan0 = validateInput(isGreaterOrEqualThan0, 'is not greater or equal than 0');
+export const isInRange = (
+    min: number = 0,
+    max: number = Number.MAX_SAFE_INTEGER,
+    v: unknown
+): boolean => Number(v) >= min && Number(v) <= max;
+export const validateInRange = (v: unknown, inputName: string, {
+    min = null, max = null
+}: Partial<Record<'min' | 'max', number>>) => {
+    if (min === null && max === null) { // eslint-disable-next-line max-len
+        return validateInput(isInRange.bind(null, 0, Number.MAX_SAFE_INTEGER), 'should be greater than or equal 0')(v, inputName);
+    } else if (min === null) {
+        return validateInput(isInRange.bind(null, 0, max), `should be between 0 and ${max}`)(v, inputName);
+    } else if (max === null) { // eslint-disable-next-line max-len
+        return validateInput(isInRange.bind(null, min, Number.MAX_SAFE_INTEGER), `should be greater than or equal ${min}`)(v, inputName);
+    } else {
+        return validateInput(isInRange.bind(null, min, max), `should be between ${min} and ${max}`)(v, inputName);
+    }
+};
+
+export const validateLength = (v: unknown, inputName: string, {
+    min = null, max = null
+}: Partial<Record<'min' | 'max', number>>) => {
+    if (min === null && max === null) { // eslint-disable-next-line max-len
+        return validateInput(isInRange.bind(null, 0, Number.MAX_SAFE_INTEGER), 'should be greater than or equal 0')(v, inputName);
+    } else if (min === null) {
+        return validateInput(isInRange.bind(null, 0, max), `should be between 0 and ${max}`)(v, inputName);
+    } else if (max === null) { // eslint-disable-next-line max-len
+        return validateInput(isInRange.bind(null, min, Number.MAX_SAFE_INTEGER), `should be greater than or equal ${min}`)(v, inputName);
+    } else {
+        return validateInput(isInRange.bind(null, min, max), `should be between ${min} and ${max}`)(v, inputName);
+    }
+};
+
+export const isNotNull = (v: unknown): boolean => v !== null;
+export const validateNotNull = validateInput(isNotNull, 'is not a valid value');
 
 export const validate = (inputs: Array<Maybe<InputFieldError>>) => {
     const errors: Array<InputFieldError> = inputs.filter(v => v !== null);
@@ -92,6 +125,4 @@ export const validate = (inputs: Array<Maybe<InputFieldError>>) => {
     );
 };
 
-export const isNull = (v: unknown): boolean => v === null;
 export const isUndefined = (v: unknown): boolean => v === undefined;
-export const isNil = (v: unknown): boolean => isNull(v) || isUndefined(v);

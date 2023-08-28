@@ -392,6 +392,24 @@ export type ResolversParentTypes = ResolversObject<{
   UpdatePageInput: UpdatePageInput;
 }>;
 
+export type LengthDirectiveArgs = {
+  max?: Maybe<Scalars['Int']['input']>;
+  min?: Maybe<Scalars['Int']['input']>;
+};
+
+export type LengthDirectiveResolver<Result, Parent, ContextType = Context, Args = LengthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type NotNullDirectiveArgs = { };
+
+export type NotNullDirectiveResolver<Result, Parent, ContextType = Context, Args = NotNullDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type RangeDirectiveArgs = {
+  max?: Maybe<Scalars['Int']['input']>;
+  min?: Maybe<Scalars['Int']['input']>;
+};
+
+export type RangeDirectiveResolver<Result, Parent, ContextType = Context, Args = RangeDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type BaseErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['BaseError'] = ResolversParentTypes['BaseError']> = ResolversObject<{
   __resolveType: TypeResolveFn<'InvalidInputError' | 'NotFoundError' | 'UnknownError', ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -507,3 +525,8 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   UnknownError?: UnknownErrorResolvers<ContextType>;
 }>;
 
+export type DirectiveResolvers<ContextType = Context> = ResolversObject<{
+  length?: LengthDirectiveResolver<any, any, ContextType>;
+  notNull?: NotNullDirectiveResolver<any, any, ContextType>;
+  range?: RangeDirectiveResolver<any, any, ContextType>;
+}>;
