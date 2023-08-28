@@ -5,6 +5,11 @@ A directive that specifies that a field cannot have a null value.
 directive @notNull on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
 
 """
+A directive that enforces that an input field or argument value must not be empty.
+"""
+directive @notEmpty on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
+"""
 A directive that specifies a numeric range for a field's value.
 The field's value must be within the specified minimum and maximum (inclusive) bounds.
 """
@@ -303,54 +308,24 @@ input UpdatePageInput {
     """
     The type of the page.
     """
-    type: PageTypeEnum
+    type: PageTypeEnum @notNull
     """
     The URL of the website for the new page.
     """
-    site: URL
-}
-
-enum ResultStatusEnum {
-    """
-    The operation was successful.
-    """
-    SUCCESS
-    """
-    The operation encountered an error.
-    """
-    ERROR
-}
-
-type Result {
-    """
-    The ID of the affected object.
-    """
-    affectedId: UUID,
-    """
-    The status of the operation.
-    """
-    status: ResultStatusEnum!,
-    """
-    Error message, if applicable.
-    """
-    error: String,
-    """
-    The associated page in the result.
-    """
-    page: Page
+    site: URL @notNull
 }
 
 type Mutation {
     """
     Creates a new page.
     """
-    createPage(input: CreatePageInput!): Result!
+    createPage(input: CreatePageInput!): PageResult!
     """
     Updates a page.
     """
-    updatePage(id: UUID!, input: UpdatePageInput!): Result!
+    updatePage(id: UUID!, input: UpdatePageInput! @notEmpty): PageResult!
     """
     Deletes a page.
     """
-    deletePage(id: UUID!): Result!
+    deletePage(id: UUID!): PageResult!
 }

@@ -67,11 +67,11 @@ export type InvalidInputError = BaseError & {
 export type Mutation = {
   __typename?: 'Mutation';
   /** Creates a new page. */
-  createPage: Result;
+  createPage: PageResult;
   /** Deletes a page. */
-  deletePage: Result;
+  deletePage: PageResult;
   /** Updates a page. */
-  updatePage: Result;
+  updatePage: PageResult;
 };
 
 
@@ -199,25 +199,6 @@ export type QueryPagesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<PageSortInput>;
 };
-
-export type Result = {
-  __typename?: 'Result';
-  /** The ID of the affected object. */
-  affectedId?: Maybe<Scalars['UUID']['output']>;
-  /** Error message, if applicable. */
-  error?: Maybe<Scalars['String']['output']>;
-  /** The associated page in the result. */
-  page?: Maybe<Page>;
-  /** The status of the operation. */
-  status: ResultStatusEnum;
-};
-
-export enum ResultStatusEnum {
-  /** The operation encountered an error. */
-  Error = 'ERROR',
-  /** The operation was successful. */
-  Success = 'SUCCESS'
-}
 
 export enum SortFieldEnum {
   /** Sort by page date */
@@ -351,8 +332,6 @@ export type ResolversTypes = ResolversObject<{
   Pages: ResolverTypeWrapper<Pages>;
   PagesResult: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['PagesResult']>;
   Query: ResolverTypeWrapper<{}>;
-  Result: ResolverTypeWrapper<Result>;
-  ResultStatusEnum: ResultStatusEnum;
   SortFieldEnum: SortFieldEnum;
   SortOrderEnum: SortOrderEnum;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -384,7 +363,6 @@ export type ResolversParentTypes = ResolversObject<{
   Pages: Pages;
   PagesResult: ResolversUnionTypes<ResolversParentTypes>['PagesResult'];
   Query: {};
-  Result: Result;
   String: Scalars['String']['output'];
   URL: Scalars['URL']['output'];
   UUID: Scalars['UUID']['output'];
@@ -398,6 +376,10 @@ export type LengthDirectiveArgs = {
 };
 
 export type LengthDirectiveResolver<Result, Parent, ContextType = Context, Args = LengthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type NotEmptyDirectiveArgs = { };
+
+export type NotEmptyDirectiveResolver<Result, Parent, ContextType = Context, Args = NotEmptyDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type NotNullDirectiveArgs = { };
 
@@ -432,9 +414,9 @@ export type InvalidInputErrorResolvers<ContextType = Context, ParentType extends
 }>;
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createPage?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationCreatePageArgs, 'input'>>;
-  deletePage?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationDeletePageArgs, 'id'>>;
-  updatePage?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationUpdatePageArgs, 'id' | 'input'>>;
+  createPage?: Resolver<ResolversTypes['PageResult'], ParentType, ContextType, RequireFields<MutationCreatePageArgs, 'input'>>;
+  deletePage?: Resolver<ResolversTypes['PageResult'], ParentType, ContextType, RequireFields<MutationDeletePageArgs, 'id'>>;
+  updatePage?: Resolver<ResolversTypes['PageResult'], ParentType, ContextType, RequireFields<MutationUpdatePageArgs, 'id' | 'input'>>;
 }>;
 
 export type NotFoundErrorResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NotFoundError'] = ResolversParentTypes['NotFoundError']> = ResolversObject<{
@@ -484,14 +466,6 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   pages?: Resolver<ResolversTypes['PagesResult'], ParentType, ContextType, Partial<QueryPagesArgs>>;
 }>;
 
-export type ResultResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = ResolversObject<{
-  affectedId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
-  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  page?: Resolver<Maybe<ResolversTypes['Page']>, ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['ResultStatusEnum'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
   name: 'URL';
 }
@@ -519,7 +493,6 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Pages?: PagesResolvers<ContextType>;
   PagesResult?: PagesResultResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  Result?: ResultResolvers<ContextType>;
   URL?: GraphQLScalarType;
   UUID?: GraphQLScalarType;
   UnknownError?: UnknownErrorResolvers<ContextType>;
@@ -527,6 +500,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
 
 export type DirectiveResolvers<ContextType = Context> = ResolversObject<{
   length?: LengthDirectiveResolver<any, any, ContextType>;
+  notEmpty?: NotEmptyDirectiveResolver<any, any, ContextType>;
   notNull?: NotNullDirectiveResolver<any, any, ContextType>;
   range?: RangeDirectiveResolver<any, any, ContextType>;
 }>;

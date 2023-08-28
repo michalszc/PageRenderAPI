@@ -1,8 +1,13 @@
-import { Context } from '../utils';
 import {
-    MutationCreatePageArgs, MutationDeletePageArgs, MutationResolvers,
-    MutationUpdatePageArgs,
-    Page, Result, ResultStatusEnum
+    Context, InputFieldError, ResultOrError,
+    isUndefined, validate, validateEmpty,
+    validateNotNull, validateUUID, validateUrl,
+    wrappedError
+} from '../utils';
+import {
+    Maybe, Page, MutationCreatePageArgs,
+    MutationDeletePageArgs, MutationResolvers,
+    MutationUpdatePageArgs
 } from './../__generated__/resolvers-types';
 
 const mutations: MutationResolvers = {
@@ -10,43 +15,62 @@ const mutations: MutationResolvers = {
         _: unknown,
         { input }: MutationCreatePageArgs,
         { database }: Context
-    ): Promise<Result> => {
-        const page: Page = await database.createPage(input);
-        const result: Result = {
-            affectedId: page.id,
-            page,
-            status: ResultStatusEnum.Success
-        };
+    ): Promise<ResultOrError<Page>> => {
+        try {
+            validate([
+                validateUrl(input.site, 'input.site')
+            ]);
 
-        return result;
+            return await database.createPage(input);
+        } catch (err) {
+            return wrappedError(err);
+        }
     },
     updatePage: async (
         _: unknown,
         { id, input }: MutationUpdatePageArgs,
         { database }: Context
-    ): Promise<Result> => {
-        const page: Page = await database.updatePage(id, input);
-        const result: Result = {
-            affectedId: page.id,
-            page,
-            status: ResultStatusEnum.Success
-        };
+    ): Promise<ResultOrError<Page>> => {
+        try {
+            const validations: Array<Maybe<InputFieldError>> = [];
 
-        return result;
+            validations.push(validateUUID(id, 'id'));
+            validations.push(validateEmpty(input, 'input'));
+
+            if (!isUndefined(input.site)) {
+                validations.push(
+                    ...[
+                        validateNotNull(input.site, 'input.site'),
+                        validateUrl(input.site, 'input.site')
+                    ]
+                );
+            }
+
+            if (!isUndefined(input.type)) {
+                validations.push(validateNotNull(input.type, 'input.type'));
+            }
+
+            validate(validations); // validate inputs
+
+            return await database.updatePage(id, input);
+        } catch (err) {
+            return wrappedError(err);
+        }
     },
     deletePage: async (
         _: unknown,
         { id }: MutationDeletePageArgs,
         { database }: Context
-    ): Promise<Result> => {
-        const page: Page = await database.deletePage(id);
-        const result: Result = {
-            affectedId: page.id,
-            page,
-            status: ResultStatusEnum.Success
-        };
+    ): Promise<ResultOrError<Page>> => {
+        try {
+            validate([
+                validateUUID(id, 'id')
+            ]);
 
-        return result;
+            return await database.deletePage(id);
+        } catch (err) {
+            return wrappedError(err);
+        }
     }
 };
 

@@ -203,7 +203,11 @@ export class Database implements IDatabase {
         const result = await this.query(`UPDATE pages SET date = CURRENT_DATE, ${update} WHERE id = $1 RETURNING *`, [
             id
         ]);
-        const page: Page = result.rows[0];
+        const page: Page = result.rows.at(0) ?? null;
+
+        if (page === null) {
+            throw new NotFoundError(`Page with ${id} not found`);
+        }
 
         return page;
     }
@@ -212,7 +216,11 @@ export class Database implements IDatabase {
         const result = await this.query('DELETE FROM pages WHERE id = $1 RETURNING *', [
             id
         ]);
-        const page: Page = result.rows[0];
+        const page: Page = result.rows.at(0) ?? null;
+
+        if (page === null) {
+            throw new NotFoundError(`Page with ${id} not found`);
+        }
 
         return page;
     }

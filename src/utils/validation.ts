@@ -112,6 +112,9 @@ export const validateLength = (v: unknown, inputName: string, {
 export const isNotNull = (v: unknown): boolean => v !== null;
 export const validateNotNull = validateInput(isNotNull, 'is not a valid value');
 
+export const isNotEmpty = (v: unknown): boolean => !(!v || !Object.keys(v).length);
+export const validateEmpty = validateInput(isNotEmpty, 'cannot be empty');
+
 export const validate = (inputs: Array<Maybe<InputFieldError>>) => {
     const errors: Array<InputFieldError> = inputs.filter(v => v !== null);
 
