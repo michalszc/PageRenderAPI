@@ -175,7 +175,7 @@ export type Pages = {
   pageInfo: PageInfo;
 };
 
-export type PagesResult = InvalidInputError | NotFoundError | Pages | UnknownError;
+export type PagesResult = InvalidInputError | Pages | UnknownError;
 
 export type Query = {
   __typename?: 'Query';
@@ -301,7 +301,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping of union types */
 export type ResolversUnionTypes<RefType extends Record<string, unknown>> = ResolversObject<{
   PageResult: ( E.WrappedError<E.InvalidInputError> ) | ( E.WrappedError<E.NotFoundError> ) | ( Page ) | ( E.WrappedError<E.UnknownError> );
-  PagesResult: ( E.WrappedError<E.InvalidInputError> ) | ( E.WrappedError<E.NotFoundError> ) | ( Pages ) | ( E.WrappedError<E.UnknownError> );
+  PagesResult: ( E.WrappedError<E.InvalidInputError> ) | ( Pages ) | ( E.WrappedError<E.UnknownError> );
 }>;
 
 /** Mapping of interface types */
@@ -458,7 +458,7 @@ export type PagesResolvers<ContextType = Context, ParentType extends ResolversPa
 }>;
 
 export type PagesResultResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PagesResult'] = ResolversParentTypes['PagesResult']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'InvalidInputError' | 'NotFoundError' | 'Pages' | 'UnknownError', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'InvalidInputError' | 'Pages' | 'UnknownError', ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

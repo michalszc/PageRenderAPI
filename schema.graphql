@@ -255,7 +255,7 @@ type UnknownError implements BaseError {
 }
 
 union PageResult = Page | InvalidInputError | NotFoundError | UnknownError
-union PagesResult = Pages | InvalidInputError | NotFoundError | UnknownError
+union PagesResult = Pages | InvalidInputError | UnknownError
 
 type Query {
     """
