@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TYPE types AS ENUM ('PDF', 'JPEG', 'PNG', 'WEBP');
 
 CREATE TABLE pages (
