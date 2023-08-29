@@ -123,7 +123,9 @@ export const validate = (inputs: Array<Maybe<InputFieldError>>) => {
     }
 
     throw new InvalidInputError(
-        `Input validation failed for fields: [${errors.map(err => err.field).join(', ')}]`,
+        `Input validation failed for fields: [${errors.map(err => err.field).filter((v, i, a) => {
+            return a.indexOf(v) === i;
+        }).join(', ')}]`,
         errors
     );
 };
