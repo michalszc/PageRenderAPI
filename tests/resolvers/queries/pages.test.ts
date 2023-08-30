@@ -127,7 +127,7 @@ describe('Queries > Pages', () => {
                     },
                     {
                         field: 'last',
-                        message: '-1 should be greater than or equal 0'
+                        message: '-1 should be between 0 and 10000'
                     }
                 ]
             }

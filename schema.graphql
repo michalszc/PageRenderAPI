@@ -265,11 +265,11 @@ type Query {
         """
         Retrieves the first N pages.
         """
-        first: Int @notNull @range(min: 0),
+        first: Int @notNull @range(min: 0, max: 10000),
         """
         Retrieves the last N pages.
         """
-        last: Int @notNull @range(min: 0),
+        last: Int @notNull @range(min: 0, max: 10000),
         """
         Retrieves pages before the specified cursor.
         """

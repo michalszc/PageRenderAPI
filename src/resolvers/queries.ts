@@ -56,7 +56,7 @@ const queries: QueryResolvers = {
                         validateNotNull(queryPagesArgs.first, 'first'),
                         validateNumber(queryPagesArgs.first, 'first'),
                         validateInRange(queryPagesArgs.first, 'first', {
-                            min: 0
+                            min: 0, max: 10000
                         })
                     ]
                 );
@@ -68,7 +68,7 @@ const queries: QueryResolvers = {
                         validateNotNull(queryPagesArgs.last, 'last'),
                         validateNumber(queryPagesArgs.last, 'last'),
                         validateInRange(queryPagesArgs.last, 'last', {
-                            min: 0
+                            min: 0, max: 10000
                         })
                     ]
                 );
