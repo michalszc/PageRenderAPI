@@ -165,7 +165,7 @@ export class Database implements IDatabase {
         const paginationinfo: PageInfo = result.rows.at(0)?.paginationinfo ?? null;
 
         if (paginationinfo === null) {
-            throw new Error('Could not get page info');
+            throw new UnknownError('Could not get page info');
         }
 
         return paginationinfo;
