@@ -7,7 +7,7 @@
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "validate": "npm run lint",
+    "validate": "npm run lint && npm run test",
     "prepare": "husky install",
     "postinstall": "npm run compile",
     "generate": "graphql-codegen --config codegen.yml",

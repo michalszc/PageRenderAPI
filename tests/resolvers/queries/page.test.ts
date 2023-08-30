@@ -1,10 +1,8 @@
 import { main } from '../../../src/utils';
 import supertest from 'supertest';
-import http from 'http';
 
 describe('Query > Page', () => {
     let request: supertest.SuperTest<supertest.Test>;
-    let httpServer: http.Server;
     const query = `
     query Query($pageId: UUID!) {
         page(id: $pageId) {
@@ -33,14 +31,8 @@ describe('Query > Page', () => {
     `;
 
     beforeAll(async () => {
-        const { app, httpServer: server } = await main();
+        const app = await main();
         request = supertest(app);
-        httpServer = server;
-    });
-
-    afterAll((done) => {
-        httpServer.closeAllConnections();
-        httpServer.close(() => done());
     });
 
     test('should get page by id - SUCCESS', async () => {

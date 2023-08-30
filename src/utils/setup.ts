@@ -57,11 +57,11 @@ export async function main() {
         })
     );
 
-    // Modified server startup
-    await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
-    console.log('🚀 Server ready at http://localhost:4000/'); // eslint-disable-line no-console
+    if (process.env.NODE_ENV !== 'test') {
+        // Modified server startup
+        await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
+        console.log('🚀 Server ready at http://localhost:4000/'); // eslint-disable-line no-console
+    }
 
-    return {
-        app, httpServer
-    };
+    return app;
 }

@@ -3,13 +3,11 @@ import { Page, Pages } from '../../../src/__generated__/resolvers-types';
 import { main } from '../../../src/utils';
 import dbJSON from '../../db.json';
 import supertest from 'supertest';
-import http from 'http';
 
 jest.mock('../../../src/providers/database');
 
 describe('Query > Pages', () => {
     let request: supertest.SuperTest<supertest.Test>;
-    let httpServer: http.Server;
     let pages: Pages;
 
     beforeAll(async () => {
@@ -25,14 +23,8 @@ describe('Query > Pages', () => {
             pageInfo
         };
 
-        const { app, httpServer: server } = await main();
+        const app = await main();
         request = supertest(app);
-        httpServer = server;
-    });
-
-    afterAll((done) => {
-        httpServer.closeAllConnections();
-        httpServer.close(() => done());
     });
 
     test('should get all pages - SUCCESS', async () => {
