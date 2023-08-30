@@ -52,7 +52,7 @@ const mutations: MutationResolvers = {
 
             validate(validations); // validate inputs
 
-            return await database.updatePage(id, input);
+            return await database.updatePage(id, { ...input, file: 'file' });
         } catch (err) {
             return wrappedError(err);
         }
