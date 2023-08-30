@@ -6,7 +6,7 @@ import supertest from 'supertest';
 
 jest.mock('../../../src/providers/database');
 
-describe('Query > Pages', () => {
+describe('Queries > Pages', () => {
     let request: supertest.SuperTest<supertest.Test>;
     let pages: Pages;
 

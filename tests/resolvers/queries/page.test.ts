@@ -1,7 +1,7 @@
 import { main } from '../../../src/utils';
 import supertest from 'supertest';
 
-describe('Query > Page', () => {
+describe('Queries > Page', () => {
     let request: supertest.SuperTest<supertest.Test>;
     const query = `
     query Query($pageId: UUID!) {
