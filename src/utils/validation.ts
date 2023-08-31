@@ -95,24 +95,28 @@ export const validateInRange = (v: unknown, inputName: string, {
     }
 };
 
-export const validateLength = (v: unknown, inputName: string, {
-    min = null, max = null
-}: Partial<Record<'min' | 'max', number>>) => {
-    if (min === null && max === null) { // eslint-disable-next-line max-len
-        return validateInput(isInRange.bind(null, 0, Number.MAX_SAFE_INTEGER), 'should be greater than or equal 0')(v, inputName);
-    } else if (min === null) {
-        return validateInput(isInRange.bind(null, 0, max), `should be between 0 and ${max}`)(v, inputName);
-    } else if (max === null) { // eslint-disable-next-line max-len
-        return validateInput(isInRange.bind(null, min, Number.MAX_SAFE_INTEGER), `should be greater than or equal ${min}`)(v, inputName);
-    } else {
-        return validateInput(isInRange.bind(null, min, max), `should be between ${min} and ${max}`)(v, inputName);
-    }
-};
+export const validateLength = validateInRange;
 
 export const isNotNull = (v: unknown): boolean => v !== null;
 export const validateNotNull = validateInput(isNotNull, 'is not a valid value');
 
-export const isNotEmpty = (v: unknown): boolean => !(!v || !Object.keys(v).length);
+export const isUndefined = (v: unknown): boolean => v === undefined;
+export const isNotEmpty = (v: unknown): boolean => {
+    if (isUndefined(v) || v === null) {
+        return false;
+    }
+
+    if (typeof v === 'string' || Array.isArray(v)) {
+        return v.length > 0;
+    }
+
+    if (typeof v === 'object') { // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return Object.keys(v as Record<string, any>).length > 0;
+    }
+
+    return true;
+};
+
 export const validateEmpty = validateInput(isNotEmpty, 'cannot be empty');
 
 export const validate = (inputs: Array<Maybe<InputFieldError>>) => {
@@ -129,5 +133,3 @@ export const validate = (inputs: Array<Maybe<InputFieldError>>) => {
         errors
     );
 };
-
-export const isUndefined = (v: unknown): boolean => v === undefined;
