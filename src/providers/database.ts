@@ -48,13 +48,13 @@ export class Database implements IDatabase {
         this.client = new pg.Client();
     }
 
-    private async connect(): Promise<void> {
+    private connect(): Promise<void> {
         this.client = new pg.Client();
 
         return this.client.connect();
     }
 
-    private async end(): Promise<void> {
+    private end(): Promise<void> {
         return this.client.end();
     }
 

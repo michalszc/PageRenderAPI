@@ -51,7 +51,7 @@ export async function main() {
         cors<cors.CorsRequest>(),
         bodyParser.json(),
         expressMiddleware(server, {
-            context: async () => ({
+            context: async () => ({ // eslint-disable-line require-await
                 database: new Database()
             })
         })

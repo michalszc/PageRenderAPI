@@ -22,6 +22,7 @@
         "indent": ["error", 4],
         "semi": [2, "always"],
         "no-console": "error",
+        "require-await": "error",
         "space-before-function-paren": ["error", {
             "anonymous": "always",
             "named": "never",

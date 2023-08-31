@@ -1,7 +1,7 @@
 import { DateFilter } from '../../../src/utils';
 
 describe('DateFilter', () => {
-    test('should properly return filter - greater/less than', async () => {
+    test('should properly return filter - greater/less than', () => {
         const gt = '2023-08-19';
         const lt = '2023-08-29';
         expect(new DateFilter({
@@ -9,7 +9,7 @@ describe('DateFilter', () => {
         }).exec()).toBe(`date > '${gt}' AND date < '${lt}'`);
     });
 
-    test('should properly return filter - greater or equal/less or equal than', async () => {
+    test('should properly return filter - greater or equal/less or equal than', () => {
         const gte = '2023-08-19';
         const lte = '2023-08-29';
         expect(new DateFilter({
@@ -17,7 +17,7 @@ describe('DateFilter', () => {
         }).exec()).toBe(`date >= '${gte}' AND date <= '${lte}'`);
     });
 
-    test('should properly return filter - wider range', async () => {
+    test('should properly return filter - wider range', () => {
         const gt = '2023-08-19';
         const gte = '2023-08-19';
         const lt = '2023-08-29';
