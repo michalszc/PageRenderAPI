@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { DateTypeDefinition, URLTypeDefinition, UUIDDefinition } from 'graphql-scalars';
 import { expressMiddleware } from '@apollo/server/express4';
-import { IDatabase, Database } from '../providers';
+import { IDatabase, Database, Render, IRender } from '../providers';
 import { resolvers } from '../resolvers';
 import bodyParser from 'body-parser';
 import { readFileSync } from 'fs';
@@ -23,7 +23,8 @@ types.setTypeParser(types.builtins.DATE, (value: string) => {
 });
 
 export interface Context {
-  database: IDatabase
+  database: IDatabase,
+  render: IRender
 }
 
 const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
@@ -52,7 +53,8 @@ export async function main() {
         bodyParser.json(),
         expressMiddleware(server, {
             context: async () => ({ // eslint-disable-line require-await
-                database: new Database()
+                database: new Database(),
+                render: new Render()
             })
         })
     );

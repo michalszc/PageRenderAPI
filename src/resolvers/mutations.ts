@@ -14,14 +14,20 @@ const mutations: MutationResolvers = {
     createPage: async (
         _: unknown,
         { input }: MutationCreatePageArgs,
-        { database }: Context
+        { database, render }: Context
     ): Promise<ResultOrError<Page>> => {
         try {
             validate([
                 validateUrl(input.site, 'input.site')
             ]);
 
-            return await database.createPage(input);
+            // Create buffer
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const buffer = await render.create(input);
+
+            return await database.createPage({
+                ...input, file: 'file'
+            });
         } catch (err) {
             return wrappedError(err);
         }
@@ -29,7 +35,7 @@ const mutations: MutationResolvers = {
     updatePage: async (
         _: unknown,
         { id, input }: MutationUpdatePageArgs,
-        { database }: Context
+        { database, render }: Context
     ): Promise<ResultOrError<Page>> => {
         try {
             const validations: Array<Maybe<InputFieldError>> = [];
@@ -51,6 +57,16 @@ const mutations: MutationResolvers = {
             }
 
             validate(validations); // validate inputs
+
+            const page: Page = await database.getPage(id);
+
+            // Create buffer
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const buffer = await render.create({
+                site: page.site,
+                type: page.type,
+                ...input
+            });
 
             return await database.updatePage(id, { ...input, file: 'file' });
         } catch (err) {

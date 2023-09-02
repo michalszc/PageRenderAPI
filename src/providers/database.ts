@@ -14,6 +14,10 @@ export type IQueryOptions = Maybe<AtLeastOne<{
     sort: string
 }>>;
 
+export interface ICreateFields extends CreatePageInput {
+    file: string;
+}
+
 export interface IUpdateFields extends UpdatePageInput {
     file?: Maybe<string>;
 }
@@ -36,7 +40,7 @@ export interface IDatabase {
         filter = null,
         sort = null
     }: QueryPagesArgs) => Promise<PageInfo>;
-    createPage: ({ site, type }: CreatePageInput) => Promise<Page>;
+    createPage: ({ site, type, file }: ICreateFields) => Promise<Page>;
     updatePage: (id: string, updateFields: IUpdateFields) => Promise<Page>;
     deletePage: (id: string) => Promise<Page>;
 }
@@ -171,9 +175,9 @@ export class Database implements IDatabase {
         return paginationinfo;
     }
 
-    public async createPage({ site, type }: CreatePageInput): Promise<Page> {
+    public async createPage({ site, type, file }: ICreateFields): Promise<Page> {
         const result = await this.query('INSERT INTO pages (type, site, file) VALUES ($1, $2, $3) RETURNING *', [
-            type, site, 'file'
+            type, site, file
         ]);
         const page: Page = result.rows[0];
 
