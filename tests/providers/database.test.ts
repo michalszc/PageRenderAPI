@@ -122,7 +122,8 @@ describe('Database', () => {
         query.mockImplementation(() => ({ rows: [page] }));
         await expect(database.createPage({
             site: 'http://example.com',
-            type: PageTypeEnum.Pdf
+            type: PageTypeEnum.Pdf,
+            file: 'file'
         })).resolves.toBe(page);
 
         expect(connect).toBeCalled();

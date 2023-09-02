@@ -3,7 +3,7 @@ import { DataType, newDb } from 'pg-mem';
 import dbJSON from './db.json';
 import { v4 } from 'uuid';
 
-global.console.log = jest.fn();
+// global.console.log = jest.fn();
 
 const db = newDb();
 db.registerExtension('uuid-ossp', (schema) => {

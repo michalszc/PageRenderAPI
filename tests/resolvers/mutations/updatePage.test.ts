@@ -1,6 +1,8 @@
 import { main } from '../../../src/utils';
 import supertest from 'supertest';
 
+jest.mock('../../../src/providers/render');
+
 describe('Mutations > UpdatePage', () => {
     let request: supertest.SuperTest<supertest.Test>;
     const query = `
