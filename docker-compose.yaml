@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
     image: localstack/localstack
+    container_name: localstack-main
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
       - "127.0.0.1:4510-4559:4510-4559"  # external services port range
@@ -35,3 +35,16 @@ services:
           apk --no-cache add aws-cli
           aws --endpoint=http://localstack:4566 s3 mb s3://${AWS_BUCKET}
           aws --endpoint=http://localstack:4566 s3api put-bucket-acl --bucket ${AWS_BUCKET} --acl private
+  postgres:
+    image: postgres:latest
+    container_name: postgresql-container
+    environment:
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    ports:
+      - "${PGPORT}:${PGPORT}"
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
