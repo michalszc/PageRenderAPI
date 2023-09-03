@@ -54,7 +54,6 @@ export class Storage implements IStorage {
 
     private upload(buffer: Buffer, Key: string, ContentType: string): Promise<PutObjectCommandOutput> {
         const command = new PutObjectCommand({
-            ACL: 'private',
             Bucket: process.env.AWS_BUCKET,
             Body: buffer,
             Key,

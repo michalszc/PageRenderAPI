@@ -3,6 +3,14 @@ import { DataType, newDb } from 'pg-mem';
 import dbJSON from './db.json';
 import { v4 } from 'uuid';
 
+// Set environment variables
+process.env.AWS_BUCKET = 'bucket';
+process.env.AWS_REGION = 'eu-central-1';
+process.env.AWS_ACCESS_KEY = 'access';
+process.env.AWS_SECRET_KEY = 'secret';
+process.env.AWS_S3_ENDPOINT = 'localhost';
+
+global.console.error = jest.fn();
 global.console.log = jest.fn();
 
 const db = newDb();
