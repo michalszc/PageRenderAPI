@@ -57,7 +57,12 @@ export async function main() {
         const key = req.params.key;
         const url = await storage.generatePresignedURL(key);
 
-        res.status(301).redirect(url);
+        // Only when running in Docker and using localstack
+        if (process.env?.LOCALSTACK && process.env?.DOCKER) {
+            res.status(301).redirect(url.replace('localstack', 'localhost'));
+        } else {
+            res.status(301).redirect(url);
+        }
     });
 
     app.use(

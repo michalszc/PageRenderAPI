@@ -1,50 +1,23 @@
 version: "3.8"
 
 services:
-  localstack:
-    image: localstack/localstack
-    container_name: localstack-main
-    ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+  pagerenderapi:
+    build: .
+    container_name: pagerenderapi
     environment:
-      - DEBUG=${DEBUG:-1}
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - SERVICES=s3
-      - AWS_DEFAULT_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-
-  create-bucket:
-      image: alpine:latest
-      container_name: create-bucket
-      environment:
-        - DEBUG=${DEBUG:-1}
-        - AWS_DEFAULT_REGION=${AWS_REGION}
-        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
-        - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
-      depends_on:
-        - localstack
-      command:
-        - sh
-        - -c
-        - |
-          apk --no-cache add aws-cli
-          aws --endpoint=http://localstack:4566 s3 mb s3://${AWS_BUCKET}
-          aws --endpoint=http://localstack:4566 s3api put-bucket-acl --bucket ${AWS_BUCKET} --acl private
-  postgres:
-    image: postgres:latest
-    container_name: postgresql-container
-    environment:
-      POSTGRES_DB: ${PGDATABASE}
-      POSTGRES_USER: ${PGUSER}
-      POSTGRES_PASSWORD: ${PGPASSWORD}
+      PGUSER: ${PGUSER} 
+      PGPASSWORD: ${PGPASSWORD} 
+      PGHOST: postgres
+      PGPORT: ${PGPORT} 
+      PGDATABASE: ${PGDATABASE} 
+      AWS_BUCKET: ${AWS_BUCKET} 
+      AWS_REGION: ${AWS_REGION} 
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY} 
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY} 
+      AWS_S3_ENDPOINT: http://localstack:4566 
     ports:
-      - "${PGPORT}:${PGPORT}"
-    tmpfs:
-      - /var/lib/postgresql/data
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - "4000:4000"
+    depends_on:
+      - localstack
+      - create-bucket
+      - postgres

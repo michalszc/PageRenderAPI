@@ -10,11 +10,12 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "validate": "npm run lint && npm run test",
     "prepare": "husky install",
-    "postinstall": "npm run compile",
     "generate": "graphql-codegen --config codegen.yml",
     "compile": "npm run generate && tsc",
     "start": "npm run compile && node --experimental-specifier-resolution=node ./dist/index.js",
-    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon --experimental-specifier-resolution=node ./dist/index.js \""
+    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon --experimental-specifier-resolution=node ./dist/index.js \"",
+    "docker:start": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up",
+    "docker:dev": "docker-compose -f docker-compose.dev.yaml up"
   },
   "keywords": [],
   "author": "",

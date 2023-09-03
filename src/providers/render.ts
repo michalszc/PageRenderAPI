@@ -12,7 +12,11 @@ export class Render implements IRender {
 
     private createBrowser(): Promise<Browser> {
         return launch({
-            headless: 'new'
+            headless: 'new', // Only when running in Docker
+            ...(process.env?.DOCKER ? { // eslint-disable-line  multiline-ternary
+                executablePath: '/usr/bin/chromium-browser', // Path to Chromium executable
+                args: ['--no-sandbox', '--disable-setuid-sandbox'] // Add these flags to avoid sandbox issues
+            } : {})
         });
     }
 
