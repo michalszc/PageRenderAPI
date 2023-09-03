@@ -9,6 +9,7 @@
       "resolveJsonModule": true,
       "esModuleInterop": true,
       "types": ["node", "jest"],
+      "skipLibCheck": true
     },
     "include": ["src/**/*"],
     "exclude": [
