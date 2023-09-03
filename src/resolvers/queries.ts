@@ -12,14 +12,17 @@ const queries: QueryResolvers = {
     page: async (
         _: unknown,
         { id }: RequireFields<QueryPageArgs, 'id'>,
-        { database }: Context
+        { url, database }: Context
     ): Promise<ResultOrError<Page>> => {
         try {
             validate([
                 validateUUID(id, 'id')
             ]);
 
-            return await database.getPage(id);
+            const page: Page = await database.getPage(id);
+            page.file = `${url}/${page.file}`;
+
+            return page;
         } catch (err) {
             return wrappedError(err);
         }
@@ -27,7 +30,7 @@ const queries: QueryResolvers = {
     pages: async (
         _: unknown,
         queryPagesArgs: Partial<QueryPagesArgs>,
-        { database }: Context
+        { url, database }: Context
     ): Promise<ResultOrError<Pages>> => {
         try {
             const validations: Array<Maybe<InputFieldError>> = [];
@@ -124,7 +127,10 @@ const queries: QueryResolvers = {
 
             const pageArr: Array<Page> = await database.getPages(queryPagesArgs);
             const edges = (pageArr?.length > 0 ? pageArr : []).map((page: Page) => ({
-                node: page,
+                node: {
+                    ...page,
+                    file: `${url}/${page.file}`
+                },
                 cursor: page.id
             }));
 

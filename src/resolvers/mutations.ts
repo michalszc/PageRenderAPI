@@ -14,7 +14,7 @@ const mutations: MutationResolvers = {
     createPage: async (
         _: unknown,
         { input }: MutationCreatePageArgs,
-        { database, render }: Context
+        { url, database, render, storage }: Context
     ): Promise<ResultOrError<Page>> => {
         try {
             validate([
@@ -22,12 +22,17 @@ const mutations: MutationResolvers = {
             ]);
 
             // Create buffer
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const buffer = await render.create(input);
 
-            return await database.createPage({
-                ...input, file: 'file'
+            // Upload file to s3
+            const key = await storage.uploadNew(buffer, input);
+
+            const page: Page = await database.createPage({
+                ...input, file: key
             });
+            page.file = `${url}/${page.file}`;
+
+            return page;
         } catch (err) {
             return wrappedError(err);
         }
@@ -35,7 +40,7 @@ const mutations: MutationResolvers = {
     updatePage: async (
         _: unknown,
         { id, input }: MutationUpdatePageArgs,
-        { database, render }: Context
+        { url, database, render, storage }: Context
     ): Promise<ResultOrError<Page>> => {
         try {
             const validations: Array<Maybe<InputFieldError>> = [];
@@ -61,14 +66,19 @@ const mutations: MutationResolvers = {
             const page: Page = await database.getPage(id);
 
             // Create buffer
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const buffer = await render.create({
                 site: page.site,
                 type: page.type,
                 ...input
             });
 
-            return await database.updatePage(id, { ...input, file: 'file' });
+            // Upload new file version to s3
+            await storage.uploadNewVersion(buffer, input.type ?? page.type, page.file);
+
+            const updatedPage: Page = await database.updatePage(id, { ...input });
+            updatedPage.file = `${url}/${updatedPage.file}`;
+
+            return updatedPage;
         } catch (err) {
             return wrappedError(err);
         }
@@ -76,14 +86,21 @@ const mutations: MutationResolvers = {
     deletePage: async (
         _: unknown,
         { id }: MutationDeletePageArgs,
-        { database }: Context
+        { url, database, storage }: Context
     ): Promise<ResultOrError<Page>> => {
         try {
             validate([
                 validateUUID(id, 'id')
             ]);
 
-            return await database.deletePage(id);
+            const page: Page = await database.deletePage(id);
+
+            // Delete file from s3
+            await storage.delete(page.file);
+
+            page.file = `${url}/${page.file}`;
+
+            return page;
         } catch (err) {
             return wrappedError(err);
         }

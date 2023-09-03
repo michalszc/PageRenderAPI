@@ -1,3 +1,4 @@
+import { IStorage, Storage } from './../providers/storage';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { DateTypeDefinition, URLTypeDefinition, UUIDDefinition } from 'graphql-scalars';
@@ -23,8 +24,10 @@ types.setTypeParser(types.builtins.DATE, (value: string) => {
 });
 
 export interface Context {
-  database: IDatabase,
-  render: IRender
+  database: IDatabase;
+  render: IRender;
+  storage: IStorage;
+  url: string;
 }
 
 const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
@@ -47,14 +50,26 @@ export async function main() {
     const server = createApolloServer(httpServer);
     await server.start();
 
+    const storage = new Storage();
+
+    // Route for getting files from s3
+    app.use('/file/:key', async (req, res) => {
+        const key = req.params.key;
+        const url = await storage.generatePresignedURL(key);
+
+        res.status(301).redirect(url);
+    });
+
     app.use(
         '/api/v1',
         cors<cors.CorsRequest>(),
         bodyParser.json(),
         expressMiddleware(server, {
-            context: async () => ({ // eslint-disable-line require-await
+            context: async ({ req }) => ({ // eslint-disable-line require-await
                 database: new Database(),
-                render: new Render()
+                render: new Render(),
+                storage,
+                url: `${req.headers.origin}/file`
             })
         })
     );
