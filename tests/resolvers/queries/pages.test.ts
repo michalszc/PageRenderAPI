@@ -15,7 +15,10 @@ describe('Queries > Pages', () => {
         // @ts-ignore
         const edges = dbJSON.data.map((page: Page) => ({
             cursor: page.id,
-            node: page
+            node: {
+                ...page,
+                file: `http://localhost/file/${page.file}`
+            }
         }));
 
         pages = {
@@ -65,7 +68,7 @@ describe('Queries > Pages', () => {
             `
         };
 
-        const response = await request.post('/api/v1').send(queryData);
+        const response = await request.post('/api/v1').set({ origin: 'http://localhost' }).send(queryData);
         expect(response.status).toBe(200);
         expect(response.body?.data).toMatchObject({
             pages

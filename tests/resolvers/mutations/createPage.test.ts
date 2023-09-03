@@ -2,6 +2,8 @@ import { main } from '../../../src/utils';
 import supertest from 'supertest';
 
 jest.mock('../../../src/providers/render');
+jest.mock('../../../src/providers/storage');
+
 describe('Mutations > CreatePage', () => {
     let request: supertest.SuperTest<supertest.Test>;
     const query = `
@@ -47,7 +49,7 @@ describe('Mutations > CreatePage', () => {
             }
         };
 
-        const response = await request.post('/api/v1').send(queryData);
+        const response = await request.post('/api/v1').set({ origin: 'http://localhost' }).send(queryData);
         expect(response.status).toBe(200);
         expect(response.body?.data).toMatchObject({
             createPage: {
@@ -55,7 +57,7 @@ describe('Mutations > CreatePage', () => {
                 type: 'PDF',
                 date: expect.any(String),
                 site: 'https://example.com',
-                file: 'file'
+                file: 'http://localhost/file/key'
             }
         });
     });

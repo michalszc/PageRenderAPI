@@ -1,6 +1,8 @@
 import { main } from '../../../src/utils';
 import supertest from 'supertest';
 
+jest.mock('../../../src/providers/storage');
+
 describe('Mutations > DeletePage', () => {
     let request: supertest.SuperTest<supertest.Test>;
     const query = `
@@ -43,7 +45,7 @@ describe('Mutations > DeletePage', () => {
             }
         };
 
-        const response = await request.post('/api/v1').send(queryData);
+        const response = await request.post('/api/v1').set({ origin: 'http://localhost' }).send(queryData);
         expect(response.status).toBe(200);
         expect(response.body?.data).toMatchObject({
             deletePage: {
@@ -51,7 +53,7 @@ describe('Mutations > DeletePage', () => {
                 type: 'JPEG',
                 date: expect.any(String),
                 site: 'https://testsite2.com',
-                file: 'https://testsite2.com/files/picture3.jpeg'
+                file: 'http://localhost/file/782f7e3a-8ec3-4085-8ea4-178ed1eb7c8c'
             }
         });
     });

@@ -41,7 +41,7 @@ describe('Queries > Page', () => {
             variables: { pageId: 'f2e6d8c1-9b3a-4e5f-a1d0-c7b9e8f2a6d3' }
         };
 
-        const response = await request.post('/api/v1').send(queryData);
+        const response = await request.post('/api/v1').set({ origin: 'http://localhost' }).send(queryData);
         expect(response.status).toBe(200);
         expect(response.body?.data).toMatchObject({
             page: {
@@ -49,7 +49,7 @@ describe('Queries > Page', () => {
                 type: 'JPEG',
                 date: new Date('2023-08-20').toISOString(),
                 site: 'https://testsite2.com',
-                file: 'https://testsite2.com/files/picture3.jpeg'
+                file: 'http://localhost/file/782f7e3a-8ec3-4085-8ea4-178ed1eb7c8c'
             }
         });
     });
