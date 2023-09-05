@@ -77,5 +77,5 @@ npm run docker:start
 ```
 
 ## License
-[![Licence](https://img.shields.io/github/license/michalszc/PageRenderAPI?style=for-the-badge)](./LICENSE)
+[![Licence](https://img.shields.io/github/license/michalszc/pagerenderapi?style=for-the-badge)](./LICENSE)
 
